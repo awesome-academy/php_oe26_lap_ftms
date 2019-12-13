@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Repositories\Course\CourseRepositoryInterface;
+use App\Repositories\Category\CategoryRepositoryInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Course;
-use App\Models\Category;
-use App\Models\User;
 
 class CourseController extends Controller
 {
+    protected $courseRepository;
+    protected $categoryRepository;
+
+    public function __construct(CourseRepositoryInterface $courseRepository, CategoryRepositoryInterface $categoryRepository)
+    {
+        $this->courseRepository = $courseRepository;
+        $this->categoryRepository = $categoryRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,8 +24,9 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::latest('created_at')->paginate(config('course.PagePaginate'));
-        $categories = Category::where('parent_id', config('course.PagePaginate'))->with('categories')->paginate(config('course.PagePaginate'));
+        $courses = $this->courseRepository->getCourseByTime();
+
+        $categories = $this->categoryRepository->getCategoryChildByName();
 
         return view('client.course.index', compact('courses', 'categories'));
     }
@@ -52,15 +60,9 @@ class CourseController extends Controller
      */
     public function show($id)
     {
-        try {
-            $course = Course::findOrFail($id);
-            $course->subjects()->get();
-            $course->users()->get();
+        $course = $this->courseRepository->find($id);
 
-            return view('client.course.course', compact('course'));
-        } catch (Exception $e) {
-            return redirect()->back()->with($e->getMessage());
-        }
+        return view('client.course.course', compact('course'));
     }
 
     /**
@@ -95,5 +97,12 @@ class CourseController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function history($id)
+    {
+        $subjects = $this->courseRepository->getSubjectByCourse($id);
+
+        return view('client.history.subjects', compact('subjects'));
     }
 }

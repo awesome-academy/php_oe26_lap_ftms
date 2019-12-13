@@ -2,14 +2,22 @@
 
 namespace App\Http\Controllers\Client;
 
+use App\Repositories\Category\CategoryRepositoryInterface;
+use App\Repositories\Course\CourseRepositoryInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Category;
-use App\Models\Course;
 use Illuminate\Support\Collection;
 
 class CategoryController extends Controller
 {
+    protected $categoryRepository;
+    protected $courseRepository;
+
+    public function __construct(CategoryRepositoryInterface $categoryRepository, CourseRepositoryInterface $courseRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+        $this->courseRepository = $courseRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -49,13 +57,10 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category = Category::where('id', $id)
-            ->orWhere('parent_id', $id)
-            ->get('id');
-        $category = $category->toArray();
-        $courses = Course::whereIn('category_id', $category)->paginate(config('course.PagePaginate'));
+        $category = $this->categoryRepository->getIdCategorySameKind($id);
+        $courses = $this->courseRepository->getCourseByCategory($category);
 
-        $categories = Category::where('parent_id', config('category.parent_id'))->with('categories')->paginate(config('course.PagePaginate'));
+        $categories = $this->categoryRepository->getCategoryChildByName();
 
         return view('client.course.index', compact('courses', 'categories'));
     }

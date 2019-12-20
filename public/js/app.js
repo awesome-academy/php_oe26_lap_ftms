@@ -19276,22 +19276,44 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-function readSubject(id) {
-  var idJquery = "#" + id;
-  $.ajax({
-    method: 'GET',
-    dataType: 'html',
-    url: '/subjects/' + id + '/show',
-    success: function success(response) {
-      $("#content").html(response);
-      $('#list li').removeClass('active');
-      $(id).addClass('active');
-    },
-    error: function error(e) {
-      console.log(e.message);
+$(document).ready(function () {
+  $("#list li").on('click', function () {
+    var id = this.id;
+    var course_id = this.value;
+    $("#list li").removeClass('active');
+    $("#" + id).addClass('active');
+
+    if (id.replace('history', '') != course_id) {
+      id = id.replace('subject', '');
+      $.ajax({
+        method: 'POST',
+        dataType: 'html',
+        url: '/subjects/' + id + '/show',
+        data: {
+          course_id: course_id
+        },
+        success: function success(response) {
+          $("#content").html(response);
+        },
+        error: function error(e) {
+          alert('Error!');
+        }
+      });
+    } else {
+      $.ajax({
+        method: 'GET',
+        dataType: 'html',
+        url: '/courses/' + course_id + '/history',
+        success: function success(response) {
+          $("#content").html(response);
+        },
+        error: function error(e) {
+          alert("Error!");
+        }
+      });
     }
   });
-}
+});
 
 /***/ }),
 

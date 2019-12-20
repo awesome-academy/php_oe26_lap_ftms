@@ -14,6 +14,16 @@ class CourseRepository extends EloquentRepository implements CourseRepositoryInt
 
     public function getCourseByTime()
     {
-        return Course::latest('created_at');
+        return Course::latest('created_at')->paginate(config('course.PagePaginate'));
+    }
+
+    public function getSubjectByCourse($id)
+    {
+        return Course::find($id)->subjects()->paginate(config('course.PagePaginate'));
+    }
+
+    public function getCourseByCategory($arr)
+    {
+        return Course::whereIn('category_id', $arr)->paginate(config('course.PagePaginate'));
     }
 }

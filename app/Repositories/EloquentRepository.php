@@ -46,7 +46,11 @@ abstract class EloquentRepository implements RepositoryInterface
 
     public function find($id)
     {
-        $result = $this->_model->findOrFail($id);
+        try {
+            $result = $this->model->findOrFail($id);
+        } catch (Exception $e) {
+            return false;
+        }
 
         return $result;
     }
@@ -61,13 +65,13 @@ abstract class EloquentRepository implements RepositoryInterface
         $result = $this->_model->find($id);
         if ($result) {
             $result->update($attributes);
-            
+
             return $result;
         }
 
         return false;
     }
-    
+
     public function delete($id)
     {
         $result = $this->_model->find($id);

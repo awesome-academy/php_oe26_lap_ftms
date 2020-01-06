@@ -91,9 +91,9 @@
                 <div class="col-xs-12 col-sm-8 col-md-8">
                     <div>
                         <ul class="nav nav-tabs" role="tablist">
-                            <li role="presentation" class="active"><a href="#courses" aria-controls="courses" role="tab" data-toggle="tab" class="font-15 text-uppercase">{{ trans('layouts.courses') }}<span class="badge">{{ $courses->count() }}</span></a></li>
-                            <li role="presentation"><a href="#subjects" aria-controls="subjects" role="tab" data-toggle="tab" class="font-15 text-uppercase">{{ trans('layouts.subjects')}}<span class="badge">{{ $subjects->count() }}</span></a></li>
-                            <li role="presentation"><a href="#tasks" aria-controls="tasks" role="tab" data-toggle="tab" class="font-15 text-uppercase">{{ trans('layouts.tasks')}}<span class="badge">{{ $tasks->count() }}</span></a></li>
+                            <li role="presentation" class="active"><a href="#courses" aria-controls="courses" role="tab" data-toggle="tab" class="font-15 text-uppercase">{{ trans('layouts.courses') }} <span class="badge">{{ $courses->count() }}</span></a></li>
+                            <li role="presentation"><a href="#subjects" aria-controls="subjects" role="tab" data-toggle="tab" class="font-15 text-uppercase">{{ trans('layouts.subjects')}} <span class="badge">{{ $subjects->count() }}</span></a></li>
+                            <li role="presentation"><a href="#tasks" aria-controls="tasks" role="tab" data-toggle="tab" class="font-15 text-uppercase">{{ trans('layouts.tasks')}} <span class="badge">{{ $tasks->count() }}</span></a></li>
                         </ul>
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="courses">
@@ -109,27 +109,21 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        @php
-                                            $i = config('client.user.true');
-                                        @endphp
-                                        @foreach ($listCourse as $value)
-                                            @foreach ($courses as $course)
-                                                @if ($value->id == $course->course_id)
-                                                <tr>
-                                                    <th scope="row">{{ '#' . $i++ }}</th>
-                                                    <td>{{ $value->name }}</td>
-                                                    <td>{{ $course->process }}</td>
-                                                    <td>
-                                                        @if ($course->status == false)
-                                                            <button class="btn btn-warning btn-xs">{{ trans('layouts.activity') }}</button>
-                                                            @else
-                                                            <button class="btn btn-success btn-xs">{{ trans('layouts.finished') }}</button>
-                                                        @endif
-                                                    </td>
-                                                    <td><a class="btn btn-info btn-xs" href="{{ route('course.show', $course->course_id) }}">{{ trans('layouts.view') }}</a></td>
-                                                </tr>
-                                                @endif
-                                            @endforeach
+                                        @php $i = 1 @endphp
+                                        @foreach($courses as $course)
+                                            <tr>
+                                                <th scope="row">{{ '#' . $i++ }}</th>
+                                                <td>{{ $course->name }}</td>
+                                                <td>{{ $course->pivot->process }}</td>
+                                                <td>
+                                                    @if ($course->pivot->status == false)
+                                                        <button class="btn btn-warning btn-xs">{{ trans('layouts.activity') }}</button>
+                                                    @else
+                                                        <button class="btn btn-success btn-xs">{{ trans('layouts.finished') }}</button>
+                                                    @endif
+                                                </td>
+                                                <td><a class="btn btn-info btn-xs" href="{{ route('course.show', $course->id) }}">{{ trans('layouts.view') }}</a></td>
+                                            </tr>
                                         @endforeach
                                         </tbody>
                                     </table>
@@ -148,30 +142,26 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    @php $j = config('client.user.true') @endphp
-                                    @foreach ($listSubject as $value)
-                                        @foreach ($subjects as $subject)
-                                            @if ($subject->subject_id == $value->id)
-                                            <tr>
-                                                <th scope="row">{{ '#' . $j++ }}</th>
-                                                <td>{{ $value->name }}</td>
-                                                <td>{{ $subject->process }}</td>
-                                                <td>{{ $subject->created_at }}</td>
-                                                <td>
-                                                    @if ($subject->created_at != $subject->updated_at)
-                                                        {{ $subject->updated_at }}
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($subject->status == config('client.user.false'))
-                                                        <button class="btn btn-warning btn-xs">{{ trans('layouts.activing') }}</button>
-                                                    @else
-                                                        <button class="btn btn-success btn-xs">{{ trans('layouts.success') }}</button>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            @endif
-                                        @endforeach
+                                    @php $j = 1 @endphp
+                                    @foreach($subjects as $subject)
+                                        <tr>
+                                            <th scope="row"># {{ $j++ }}</th>
+                                            <td>{{ $subject->name }}</td>
+                                            <td>{{ $subject->pivot->process }}</td>
+                                            <td>{{ $subject->pivot->created_at }}</td>
+                                            <td>
+                                                @if ($subject->pivot->created_at != $subject->pivot->updated_at)
+                                                    {{ $subject->pivot->updated_at }}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($subject->pivot->status == false)
+                                                    <button class="btn btn-warning btn-xs">{{ trans('layouts.activing') }}</button>
+                                                @else
+                                                    <button class="btn btn-success btn-xs">{{ trans('layouts.success') }}</button>
+                                                @endif
+                                            </td>
+                                        </tr>
                                     @endforeach
                                     </tbody>
                                 </table>
@@ -188,29 +178,25 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    @php $k = config('client.user.true') @endphp
-                                    @foreach ($listTask as $value)
-                                        @foreach ($tasks as $task)
-                                            @if ($value->id == $task->task_id)
-                                            <tr>
-                                                <th scope="row">{{ '#' . $k++ }}</th>
-                                                <td>{{ $value->name }}</td>
-                                                <td>{{ $task->created_at }}</td>
-                                                <td>
-                                                    @if ($subject->created_at != $subject->updated_at)
-                                                        {{ $subject->updated_at }}
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($task->status == config('client.user.false'))
-                                                        <button class="btn btn-warning btn-xs">{{ trans('layouts.activing') }}</button>
-                                                    @else
-                                                        <button class="btn btn-success btn-xs">{{ trans('layouts.finished') }}</button>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            @endif
-                                        @endforeach
+                                    @php $k = 1 @endphp
+                                    @foreach ($tasks as $task)
+                                        <tr>
+                                            <th scope="row"># {{ $k++ }}</th>
+                                            <td>{{ $task->name }}</td>
+                                            <td>{{ $task->pivot->created_at }}</td>
+                                            <td>
+                                                @if ($task->pivot->created_at != $task->pivot->updated_at)
+                                                    {{ $subject->updated_at }}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($task->pivot->status == false)
+                                                    <button class="btn btn-warning btn-xs">{{ trans('layouts.activing') }}</button>
+                                                @else
+                                                    <button class="btn btn-success btn-xs">{{ trans('layouts.finished') }}</button>
+                                                @endif
+                                            </td>
+                                        </tr>
                                     @endforeach
                                     </tbody>
                                 </table>

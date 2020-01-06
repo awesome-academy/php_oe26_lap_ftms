@@ -11,4 +11,9 @@ class SubjectRepository extends EloquentRepository implements SubjectRepositoryI
     {
         return Subject::class;
     }
+
+    public function getTaskBySubject($id)
+    {
+        return Subject::find($id)->tasks;
+    }
 }

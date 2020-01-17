@@ -7,8 +7,6 @@ for (var i = 0; i < subjects.length; i++) {
         'start': subjects[i]['created_at'].slice(0, 10),
         'end': subjects[i]['updated_at'].slice(0, 10),
         'textColor': 'black',
-        'backgroundColor': '#00e600',
+        'backgroundColor': subjects[i]['color'],
     };
 }
-
-calendarEvents = calendarEvents.concat(calendarEvents1, calendarEvents2);

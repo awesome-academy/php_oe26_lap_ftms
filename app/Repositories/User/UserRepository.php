@@ -21,4 +21,9 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
     {
         return User::with('courses')->find($id);
     }
+
+    public function findWithTask($id)
+    {
+        return User::with('tasks')->find($id);
+    }
 }

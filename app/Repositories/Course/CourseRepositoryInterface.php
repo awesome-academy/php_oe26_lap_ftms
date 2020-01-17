@@ -9,4 +9,8 @@ interface CourseRepositoryInterface
     public function getSubjectByCourse($id);
 
     public function getCourseByCategory($arr);
+
+    public function groupCourseByYear();
+
+    public function groupCourseByMonth($year, $month);
 }

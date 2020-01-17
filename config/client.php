@@ -19,4 +19,10 @@ return [
     ],
     'start' => 'You started ',
     'row' => 3,
+    'hour' => 3600,
+    'color'=> [
+        'red' => 'red',
+        'yellow' => '#f5f242',
+        'green' => '#00e600',
+    ],
 ];
